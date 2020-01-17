@@ -349,3 +349,23 @@ ui:
   # This should be a multi-line string mapping directly to the a map of
   # the annotations to apply to the ui service
   annotations: {}
+
+  ingress:
+    enabled: false
+
+    # hosts is a list of host name to create Ingress rules.
+    # The value below is an array of objects, examples are shown below.
+    hosts: []
+     # - sslexample.foo.com
+
+    # tls is a list of hosts and secret name in an Ingress
+    # which tells the Ingress controller to secure the channel.
+    # The value below is an array of objects, examples are shown below.
+    tls: []
+     # - hosts:
+     #   - sslexample.foo.com
+     #   secretName: testsecret-tls
+
+    # This should be a multi-line string mapping directly to the a map of
+    # the annotations to configure some options depending on the Ingress controller
+    annotations: null

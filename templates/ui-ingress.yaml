@@ -1,0 +1,37 @@
+{{- if (and (ne (.Values.ui.ingress.enabled | toString) "-") .Values.ui.ingress.enabled) }}
+{{- $serviceName := printf "%s-%s" (include "vault.fullname" .) "ui" -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "vault.fullname" . }}-ingress
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "vault.name" . }}
+    chart: {{ template "vault.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  {{- if .Values.ui.ingress.annotations }}
+  annotations:
+    {{ tpl .Values.ui.ingress.annotations . | nindent 4 | trim }}
+  {{- end}}
+spec:
+  rules:
+    {{- range .Values.ui.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ $serviceName }}
+              servicePort: 8200
+    {{- end -}}
+  {{- if .Values.ui.ingress.tls }}
+  tls:
+    {{- range $value := .Values.ui.ingress.tls }}
+    - hosts:
+      {{- range $value.hosts }}
+      - {{ . }}
+      {{- end }}
+      secretName: {{ $value.secretName }}
+    {{- end }}
+  {{- end }}
+{{- end }} 
